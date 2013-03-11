@@ -1,38 +1,42 @@
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE GADTs, StandaloneDeriving, DeriveDataTypeable #-}
 
 module HOAS where
 
 import Data.Typeable
 import Text.Show.Functions
 
-import qualified DeBruijn
 
-
--- Lambda terms using Haskell functions to represent functionals
+-- Open lambda terms (without a recursive knot) using Haskell functions to represent functionals.
 --
--- * We don't care about exotic terms here, and hence don't pull the recursive
---   term structure out.
--- * The `Typeable' contexts and the `Tag' variant are in preparation for
---   being able to convert to a de Bruijn representation.
+-- * We don't care about exotic terms here, and hence don't use a parametrised representation.
+-- * The `Typeable' contexts and the `Tag' variant are in preparation for being able to convert to a
+--   de Bruijn representation.
 --
-data Term t where
-  Tag :: Typeable t      -- for conversion to de Bruijn
-      => Int -> Term t    
-         -- environment size at defining occurrence
+data PreTerm term t where
+    -- for conversion to de Bruijn
+  Tag :: Typeable t                               => Int                     -> PreTerm term t    
+                                                     -- environment size at defining occurrence
 
-  Con :: (Typeable t, Show t)
-      => t                       -> Term t
-  Lam :: (Typeable s, Typeable t,
-          Show s, Show t)
-      => (Term s -> Term t)      -> Term (s -> t)
-  App :: (Typeable s, Typeable t,
-          Show s, Show t)
-      => Term (s -> t) -> Term s -> Term t
+  Con :: (Typeable t, Show t)                     => t                       -> PreTerm term t
+  Lam :: (Typeable s, Typeable t, Show s, Show t) => (Term s -> term t)      -> PreTerm term (s -> t)
+  App :: (Typeable s, Typeable t, Show s, Show t) => term (s -> t) -> term s -> PreTerm term t
+
+-- Closed vanilla terms to represent source terms
+--
+newtype Term t = Term (PreTerm Term t)
+
+deriving instance Typeable1 Term
+
+-- Term constructors
+--
+con c     = Term $ Con c
+lam f     = Term $ Lam f
+f `app` a = Term $  f `App` a
 
 -- A term interpreter for closed terms
 --
 intp :: Show t => Term t -> t
-intp (Tag ix)      = error "HOAS.intp: Tag is only for conversion"
-intp (Con v)       = v
-intp (Lam fun)     = intp . fun . Con
-intp (App fun arg) = (intp fun) (intp arg)
+intp (Term (Tag ix))      = error "HOAS.intp: Tag is only for conversion"
+intp (Term (Con v))       = v
+intp (Term (Lam fun))     = intp . fun . Term . Con
+intp (Term (App fun arg)) = (intp fun) (intp arg)

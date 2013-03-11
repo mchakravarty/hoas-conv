@@ -44,10 +44,10 @@ convert :: HOAS.Term t -> DeBruijn.Term () t
 convert = cvt EmptyLayout
   where
     cvt :: Layout env env -> HOAS.Term t -> DeBruijn.Term env t
-    cvt lyt (HOAS.Tag sz)      = DeBruijn.Var (prjIx (size lyt - sz - 1) lyt)
-    cvt lyt (HOAS.Con v)       = DeBruijn.Con v
-    cvt lyt (HOAS.Lam f)       = DeBruijn.Lam (cvt lyt' (f tag))
+    cvt lyt (HOAS.Term (HOAS.Tag sz))      = DeBruijn.Var (prjIx (size lyt - sz - 1) lyt)
+    cvt lyt (HOAS.Term (HOAS.Con v))       = DeBruijn.Con v
+    cvt lyt (HOAS.Term (HOAS.Lam f))       = DeBruijn.Lam (cvt lyt' (f tag))
       where
-        tag  = HOAS.Tag (size lyt)
+        tag  = HOAS.Term $ HOAS.Tag (size lyt)
         lyt' = inc lyt `PushLayout` DeBruijn.ZeroIx
-    cvt lyt (HOAS.App fun arg) = DeBruijn.App (cvt lyt fun) (cvt lyt arg)
+    cvt lyt (HOAS.Term (HOAS.App fun arg)) = DeBruijn.App (cvt lyt fun) (cvt lyt arg)

@@ -7,31 +7,31 @@ import qualified DeBruijn
 import qualified HOAS
 import Convert
 
-i = HOAS.Lam $ \x -> x
+i = HOAS.lam $ \x -> x
 
-zero  = HOAS.Lam $ \f -> HOAS.Lam $ \x -> x
-one   = HOAS.Lam $ \f -> HOAS.Lam $ \x -> f `HOAS.App` x
-two   = HOAS.Lam $ \f -> HOAS.Lam $ \x -> f `HOAS.App` (f `HOAS.App` x)
-three = HOAS.Lam $ \f -> HOAS.Lam $ \x -> 
-          f `HOAS.App` (f `HOAS.App` (f `HOAS.App` x))
+zero  = HOAS.lam $ \f -> HOAS.lam $ \x -> x
+one   = HOAS.lam $ \f -> HOAS.lam $ \x -> f `HOAS.app` x
+two   = HOAS.lam $ \f -> HOAS.lam $ \x -> f `HOAS.app` (f `HOAS.app` x)
+three = HOAS.lam $ \f -> HOAS.lam $ \x -> 
+          f `HOAS.app` (f `HOAS.app` (f `HOAS.app` x))
 
-plus = HOAS.Lam $ \m -> 
-       HOAS.Lam $ \n -> 
-       HOAS.Lam $ \f -> 
-       HOAS.Lam $ \x -> m `HOAS.App` f `HOAS.App` (n `HOAS.App` f `HOAS.App` x)
+plus = HOAS.lam $ \m -> 
+       HOAS.lam $ \n -> 
+       HOAS.lam $ \f -> 
+       HOAS.lam $ \x -> m `HOAS.app` f `HOAS.app` (n `HOAS.app` f `HOAS.app` x)
 
-plusTwoThree = plus `HOAS.App` two `HOAS.App` three
+plusTwoThree = plus `HOAS.app` two `HOAS.app` three
 
 data Nat = Z | S Nat deriving (Show, Typeable)
 
-pair = HOAS.Lam $ \x -> 
-       HOAS.Lam $ \y -> 
-       HOAS.Lam $ \z -> z `HOAS.App` x `HOAS.App` y
-pairfst = HOAS.Lam $ \p -> p `HOAS.App` (HOAS.Lam $ \x -> HOAS.Lam $ \y -> x)
-pairsnd = HOAS.Lam $ \p -> p `HOAS.App` (HOAS.Lam $ \x -> HOAS.Lam $ \y -> y)
+pair = HOAS.lam $ \x -> 
+       HOAS.lam $ \y -> 
+       HOAS.lam $ \z -> z `HOAS.app` x `HOAS.app` y
+pairfst = HOAS.lam $ \p -> p `HOAS.app` (HOAS.lam $ \x -> HOAS.lam $ \y -> x)
+pairsnd = HOAS.lam $ \p -> p `HOAS.app` (HOAS.lam $ \x -> HOAS.lam $ \y -> y)
 
-pairfstPair = pairfst `HOAS.App` 
-                (pair `HOAS.App` (HOAS.Con 'a') `HOAS.App` (HOAS.Con 'b'))
+pairfstPair = pairfst `HOAS.app` 
+                (pair `HOAS.app` (HOAS.con 'a') `HOAS.app` (HOAS.con 'b'))
 
 main 
   = do
