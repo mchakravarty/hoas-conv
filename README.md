@@ -13,11 +13,11 @@ The HOAS term language requires an extra variant (called Tag in the code) that r
 We require an explicit type representation (of the types of bound variables) during the conversion. We use Data.Typeable for that purpose.
 The implementation consists of four Haskell modules:
 
-* `HOAS.hs`: Typed terms in higher-order abstract syntax
-* `DeBruijn.hs`: Typed terms using de Bruijn notation
-* `Convert.hs`: Type-preserving conversion from HOAS to de Bruijn
-* `Main.hs`: Some example conversions
+* [`HOAS.hs`](HOAS.hs): Typed terms in higher-order abstract syntax
+* [`DeBruijn.hs`](DeBruijn.hs): Typed terms using de Bruijn notation
+* [`Convert.hs`](Convert.hs): Type-preserving conversion from HOAS to de Bruijn
+* [`Main.hs`](Main.hs): Some example conversions
 
 (This code has been tested with GHC 6.11.)
 
-__Update [9Jul09]__ Robert Atkey, Sam Lindley & Jeremy Yallop have a forthcoming paper entitled [Unembedding Domain-Specific Languages](http://homepages.inf.ed.ac.uk/ratkey/unembedding/) in the upcoming Haskell Symposium 2009 that addresses the exact same translation, but on the basis of a somewhat different representation of HOAS terms.
+__Update [9Jul09]__ Robert Atkey, Sam Lindley & Jeremy Yallop have a forthcoming paper entitled [Unembedding Domain-Specific Languages](http://homepages.inf.ed.ac.uk/slindley/papers/unembedding.pdf) in the upcoming Haskell Symposium 2009 that addresses the exact same translation, but on the basis of a somewhat different representation of HOAS terms.
