@@ -20,4 +20,4 @@ The implementation consists of four Haskell modules:
 
 (This code has been tested with GHC 6.11.)
 
-__Update [9Jul09]__ Robert Atkey, Sam Lindley & Jeremy Yallop have a forthcoming paper entitled [Unembedding Domain-Specific Languages](http://homepages.inf.ed.ac.uk/slindley/papers/unembedding.pdf) in the upcoming Haskell Symposium 2009 that addresses the exact same translation, but on the basis of a somewhat different representation of HOAS terms.
+__NB__ After completing the HOAS to de Bruijn (without sharing recovery) and publishing it on my website, I learnt that Robert Atkey, Sam Lindley & Jeremy Yallop had independently developed the same method and were about to publish it in a paper entitled [Unembedding Domain-Specific Languages](http://homepages.inf.ed.ac.uk/slindley/papers/unembedding.pdf) in the ACM SIGPLAN Haskell Symposium 2009. That paper discusses other related issues as well and is based on a somewhat different representation of HOAS terms.
