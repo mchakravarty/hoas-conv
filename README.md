@@ -18,6 +18,6 @@ The implementation consists of four Haskell modules:
 * [`Convert.hs`](Convert.hs): Type-preserving conversion from HOAS to de Bruijn
 * [`Main.hs`](Main.hs): Some example conversions
 
-(This code has been tested with GHC 6.11.)
+(This code has been tested with GHC 7.4.2.)
 
 __NB__ After completing the HOAS to de Bruijn (without sharing recovery) and publishing it on my website, I learnt that Robert Atkey, Sam Lindley & Jeremy Yallop had independently developed the same method and were about to publish it in a paper entitled [Unembedding Domain-Specific Languages](http://homepages.inf.ed.ac.uk/slindley/papers/unembedding.pdf) in the ACM SIGPLAN Haskell Symposium 2009. That paper discusses other related issues as well and is based on a somewhat different representation of HOAS terms.
