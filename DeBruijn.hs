@@ -4,6 +4,8 @@ module DeBruijn where
 
 import Text.Show.Functions
 
+import Data.Char
+
 
 -- Type environments are nested pairs (..((), t1), t2, ..., tn)
 
@@ -16,10 +18,10 @@ data Ix env t where
 
 instance Show (Ix env t) where
   show = show . ixToInt
-    where
-      ixToInt :: Ix env t -> Int
-      ixToInt ZeroIx     = 0
-      ixToInt (SuccIx n) = ixToInt n + 1
+
+ixToInt :: Ix env t -> Int
+ixToInt ZeroIx     = 0
+ixToInt (SuccIx n) = ixToInt n + 1
 
 -- Lambda terms using de Bruijn indices to represent variables
 --
@@ -41,6 +43,27 @@ instance Show (Term env t) where
       showParen t@(Var {}) = show t
       showParen t@(Con {}) = show t
       showParen t          = "(" ++ show t ++ ")"
+
+pprTerm :: Term env t -> String
+pprTerm = ppr 0
+  where
+    ppr :: Int -> Term env t -> String
+    ppr lvl (Var ix)      = pprIx lvl ix
+    ppr lvl (Con c)       = show c
+    ppr lvl (Lam body)    = "\\" ++ pprIx lvl ZeroIx ++ ". " ++ ppr (lvl + 1) body
+    ppr lvl (App fun arg) = pprParen lvl fun ++ " " ++ pprParen lvl arg
+    
+    pprParen :: Int -> Term  env t -> String
+    pprParen lvl t@(Var {}) = ppr lvl t
+    pprParen lvl t@(Con {}) = ppr lvl t
+    pprParen lvl t          = "(" ++ ppr lvl t ++ ")"
+    
+    pprIx :: Int -> Ix env t -> String
+    pprIx lvl ix
+      | n < 26    = [chr (ord 'a' + n)]
+      | otherwise = 'v':show n
+      where
+        n = lvl - ixToInt ix
 
 -- Valuation for a type environment
 --

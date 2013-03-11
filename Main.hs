@@ -42,10 +42,11 @@ main
       printLine "three              :"     (convert three)
       printLine "plus               :"     (convert plus)
       printLine "plus two three     :\n  " (convert plusTwoThree)
-      printLine "EVAL plus two three:" 
+      printLine' "EVAL plus two three:" 
         ((DeBruijn.intp (convert plusTwoThree)) DeBruijn.Empty S Z)
       printLine "pairfst (pair 'a' 'b'):\n  " (convert pairfstPair)
-      printLine "EVAL pairfst (pair 'a' 'b'):"   
+      printLine' "EVAL pairfst (pair 'a' 'b'):"   
         (DeBruijn.intp (convert pairfstPair) DeBruijn.Empty)
   where
-    printLine desc e = putStrLn $ desc ++ " " ++ show e
+    printLine  desc e = putStrLn $ desc ++ " " ++ show e ++ "    — " ++ DeBruijn.pprTerm e
+    printLine' desc e = putStrLn $ desc ++ " " ++ show e
