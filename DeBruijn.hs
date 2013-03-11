@@ -31,10 +31,16 @@ data Term env t where
   App :: Term env (s -> t) -> Term env s -> Term env t
 
 instance Show (Term env t) where
-  show (Var ix)      = "{" ++ show ix ++ "}"
-  show (Con c)       = show c
-  show (Lam body)    = "(\\" ++ show body ++ ")"
-  show (App fun arg) = "(" ++ show fun ++ " " ++ show arg ++ ")"
+  show = showTerm
+    where
+      showTerm (Var ix)      = "#" ++ show ix
+      showTerm (Con c)       = show c
+      showTerm (Lam body)    = "\\" ++ show body
+      showTerm (App fun arg) = showParen fun ++ " " ++ showParen arg
+      
+      showParen t@(Var {}) = show t
+      showParen t@(Con {}) = show t
+      showParen t          = "(" ++ show t ++ ")"
 
 -- Valuation for a type environment
 --
