@@ -6,6 +6,11 @@ import Data.Typeable
 import Text.Show.Functions
 
 
+-- The level of lambda-bound variables. The root has level 0; then it increases with each bound
+-- variable — i.e., it is the same as the size of the environment at the defining occurence.
+--
+type Level = Int
+
 -- Open lambda terms (without a recursive knot) using Haskell functions to represent functionals.
 --
 -- * We don't care about exotic terms here, and hence don't use a parametrised representation.
@@ -14,8 +19,7 @@ import Text.Show.Functions
 --
 data PreTerm term t where
     -- for conversion to de Bruijn
-  Tag :: Typeable t                               => Int                     -> PreTerm term t    
-                                                     -- environment size at defining occurrence
+  Tag :: Typeable t                               => Level                   -> PreTerm term t    
 
   Con :: (Typeable t, Show t)                     => t                       -> PreTerm term t
   Lam :: (Typeable s, Typeable t, Show s, Show t) => (Term s -> term t)      -> PreTerm term (s -> t)
