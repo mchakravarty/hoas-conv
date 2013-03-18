@@ -9,9 +9,7 @@ An obvious way to relief the tension between the representations is to use HOAS 
 
 The following Haskell code demonstrates the type-preserving conversion from a HOAS to a de Bruijn representation for a simple term language (essentially the lambda calculus with constants of arbitrary type). The two important aspects of the method are two:
 
-The HOAS term language requires an extra variant (called Tag in the code) that reifies variables during the conversion — otherwise, a HOAS representation doesn't explicitly represent variables.
-We require an explicit type representation (of the types of bound variables) during the conversion. We use Data.Typeable for that purpose.
-The implementation consists of four Haskell modules:
+The HOAS term language requires an extra variant (called Tag in the code) that reifies variables during the conversion — otherwise, a HOAS representation doesn't explicitly represent variables. We require an explicit type representation (of the types of bound variables) during the conversion. We use Data.Typeable for that purpose. The implementation comprises five Haskell modules:
 
 * [`HOAS.hs`](HOAS.hs): Typed terms in higher-order abstract syntax
 * [`DeBruijn.hs`](DeBruijn.hs): Typed terms using de Bruijn notation
