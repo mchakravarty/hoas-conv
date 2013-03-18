@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs, StandaloneDeriving, DeriveDataTypeable #-}
+{-# LANGUAGE GADTs, StandaloneDeriving, DeriveDataTypeable, NoMonomorphismRestriction #-}
 
 module HOAS where
 
@@ -11,36 +11,38 @@ import Text.Show.Functions
 --
 type Level = Int
 
--- Open lambda terms (without a recursive knot) using Haskell functions to represent functionals.
+-- Lambda terms in higher-order abstract syntax
 --
 -- * We don't care about exotic terms here, and hence don't use a parametrised representation.
 -- * The `Typeable' contexts and the `Tag' variant are in preparation for being able to convert to a
 --   de Bruijn representation.
 --
-data PreTerm term t where
+data Term t where
     -- for conversion to de Bruijn
-  Tag :: Typeable t                               => Level                   -> PreTerm term t    
+  Tag :: Typeable t                               => Level                   -> Term t    
 
-  Con :: (Typeable t, Show t)                     => t                       -> PreTerm term t
-  Lam :: (Typeable s, Typeable t, Show s, Show t) => (Term s -> term t)      -> PreTerm term (s -> t)
-  App :: (Typeable s, Typeable t, Show s, Show t) => term (s -> t) -> term s -> PreTerm term t
-
--- Closed vanilla terms to represent source terms
---
-newtype Term t = Term (PreTerm Term t)
+  Con :: (Typeable t, Show t)                     => t                       -> Term t
+  Lam :: (Typeable s, Typeable t, Show s, Show t) => (Term s -> Term t)      -> Term (s -> t)
+  App :: (Typeable s, Typeable t, Show s, Show t) => Term (s -> t) -> Term s -> Term t
 
 deriving instance Typeable1 Term
 
+showTermOp :: Term t -> String
+showTermOp (Tag lvl) = "Tag " ++ show lvl
+showTermOp (Con v)   = "Con " ++ show v
+showTermOp (Lam {})  = "Lam"
+showTermOp (App {})  = "App"
+
 -- Term constructors
 --
-con c     = Term $ Con c
-lam f     = Term $ Lam f
-f `app` a = Term $  f `App` a
+con = Con
+lam = Lam
+app = App
 
 -- A term interpreter for closed terms
 --
 intp :: Show t => Term t -> t
-intp (Term (Tag ix))      = error "HOAS.intp: Tag is only for conversion"
-intp (Term (Con v))       = v
-intp (Term (Lam fun))     = intp . fun . Term . Con
-intp (Term (App fun arg)) = (intp fun) (intp arg)
+intp (Tag ix)      = error "HOAS.intp: Tag is only for conversion"
+intp (Con v)       = v
+intp (Lam fun)     = intp . fun . Con
+intp (App fun arg) = (intp fun) (intp arg)
