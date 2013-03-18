@@ -15,6 +15,7 @@ The implementation consists of four Haskell modules:
 
 * [`HOAS.hs`](HOAS.hs): Typed terms in higher-order abstract syntax
 * [`DeBruijn.hs`](DeBruijn.hs): Typed terms using de Bruijn notation
+* [`Sharing.hs`](Sharing.hs): Typed sharing recovery as a pre-processing step before conversion to de Bruijn notation
 * [`Convert.hs`](Convert.hs): Type-preserving conversion from HOAS to de Bruijn
 * [`Main.hs`](Main.hs): Some example conversions
 
