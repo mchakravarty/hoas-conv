@@ -5,6 +5,7 @@ import Data.Typeable
 
 import qualified DeBruijn
 import qualified HOAS
+import HOAS (con, lam, app)
 import Convert
 
 i = HOAS.lam $ \x -> x
@@ -32,6 +33,20 @@ pairsnd = HOAS.lam $ \p -> p `HOAS.app` (HOAS.lam $ \x -> HOAS.lam $ \y -> y)
 
 pairfstPair = pairfst `HOAS.app` 
                 (pair `HOAS.app` (HOAS.con 'a') `HOAS.app` (HOAS.con 'b'))
+
+testSharing :: (Eq t, Show t, Typeable t) => HOAS.Term t -> IO ()
+testSharing t
+  | sharingResult == nonSharingResult 
+  = putStrLn $ DeBruijn.pprTerm (convert t) ++ ": OK"
+  | otherwise
+  = do
+    { putStrLn $ DeBruijn.pprTerm (convert t) ++ ": OK"
+    ; putStrLn $ "  Without sharing: " ++ show nonSharingResult
+    ; putStrLn $ "  With sharing   : " ++ show sharingResult
+    }
+  where
+    nonSharingResult = DeBruijn.intp (convert t)        DeBruijn.Empty
+    sharingResult    = DeBruijn.intp (convertSharing t) DeBruijn.Empty
 
 main 
   = do

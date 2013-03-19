@@ -47,14 +47,14 @@ instance Show (Term env t) where
       showParen t          = "(" ++ show t ++ ")"
 
 pprTerm :: Term env t -> String
-pprTerm = ppr 0
+pprTerm = ppr (-1)
   where
     ppr :: Int -> Term env t -> String
     ppr lvl (Var ix)      = pprIdx lvl ix
     ppr lvl (Con c)       = show c
-    ppr lvl (Lam body)    = "\\" ++ pprIdx lvl ZeroIdx ++ ". " ++ ppr (lvl + 1) body
+    ppr lvl (Lam body)    = "\\" ++ pprIdx (lvl + 1) ZeroIdx ++ ". " ++ ppr (lvl + 1) body
     ppr lvl (App fun arg) = pprParen lvl fun ++ " " ++ pprParen lvl arg
-    ppr lvl (Let bnd body) = "let " ++ pprIdx lvl ZeroIdx ++ " = " ++ ppr lvl bnd ++
+    ppr lvl (Let bnd body) = "let " ++ pprIdx (lvl + 1) ZeroIdx ++ " = " ++ ppr lvl bnd ++
                              " in " ++ ppr (lvl + 1) body
     
     pprParen :: Int -> Term  env t -> String

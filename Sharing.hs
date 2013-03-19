@@ -496,7 +496,7 @@ lookupStableTag lvl counts
 -- ---------
 
 traceOn :: Bool
-traceOn = True
+traceOn = False
 
 tracePure :: String -> String -> a -> a
 tracePure header msg val | traceOn   = trace (header ++ ": " ++ msg) val
