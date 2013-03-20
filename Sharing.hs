@@ -480,8 +480,7 @@ lookupStableTag lvl counts
                 intercalate ", " [showST st | NodeCount st _ <- counts']
   where
     hasLevel (NodeCount (StableSharingTerm _ (TermSharing _ (Tag lvl'))) _) = lvl == lvl'
-    hasLevel (NodeCount st _)
-      = error $ "lookupStableTag: encountered a node that is not a plain 'Tag'\n  " ++ showST st
+    hasLevel (NodeCount st _)                                               = False
         
     noStableSharing :: StableSharingTerm
     noStableSharing = StableSharingTerm noStableTermName (undefined :: SharingTermFloated ())

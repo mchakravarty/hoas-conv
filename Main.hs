@@ -68,16 +68,12 @@ main
       printLine' "EVAL pairfst (pair 'a' 'b'):"   
         (DeBruijn.intp (convert pairfstPair) DeBruijn.Empty)
 
-      testSharing (let two = con 2 in con (+) `app` two `app` two)
-      testSharing (let four = let two = con 2 in con (+) `app` two `app` two
-                   in
-                   con (*) `app` four `app` four)
-        -- -- let y = \a -> (1::Int) in let x = let z = (\c d -> c) y in z z in x ((\b -> x) y)
-        -- let y = \a -> (1::Int) in let x = let z = (\c -> c) y in (\d e -> d) z z in x ((\b -> x) y)
+        -- [too polymorphic: let y = \a -> (1::Int) in let x = let z = (\c d -> c) y in z z in x ((\b -> x) y)]
+        -- let y = \a -> 1 in let x = let z = (\c -> c) y in (\d -> z) z in (\e -> x 2) ((\b -> x) y)
       testSharing (let    y = lam $ \a -> con (1::Int) 
-                   in let x = let z = (lam $ \c -> c) `app` y in (lam $ \d -> lam $ \e -> d) `app` z `app` z 
+                   in let x = let z = (lam $ \c -> c) `app` y in (lam $ \d -> z) `app` z
                    in 
-                   (lam $ \d -> lam $ \e -> d `app` con (2::Int)) `app` x `app` ((lam $ \b -> x) `app` y))
+                   (lam $ \e -> x `app` con (2::Int)) `app` ((lam $ \b -> x) `app` y))
   where
     printLine  desc e = putStrLn $ desc ++ " " ++ show e ++ "    — " ++ DeBruijn.pprTerm e
     printLine' desc e = putStrLn $ desc ++ " " ++ show e
