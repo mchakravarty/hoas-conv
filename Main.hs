@@ -72,8 +72,12 @@ main
         -- let y = \a -> 1 in let x = let z = (\c -> c) y in (\d -> z) z in (\e -> x 2) ((\b -> x) y)
       testSharing (let    y = lam $ \a -> con (1::Int) 
                    in let x = let z = (lam $ \c -> c) `app` y in (lam $ \d -> z) `app` z
-                   in 
+                   in
                    (lam $ \e -> x `app` con (2::Int)) `app` ((lam $ \b -> x) `app` y))
+      testSharing (let inc = con (+) `app` con 1
+                   in let nine = let three = inc `app` con 2 in (con (*)) `app` three `app` three
+                   in
+                   con (-) `app` (inc `app` nine) `app` nine)
   where
     printLine  desc e = putStrLn $ desc ++ " " ++ show e ++ "    — " ++ DeBruijn.pprTerm e
     printLine' desc e = putStrLn $ desc ++ " " ++ show e
