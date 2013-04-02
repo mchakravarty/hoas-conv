@@ -78,6 +78,11 @@ main
                    in let nine = let three = inc `app` con 2 in (con (*)) `app` three `app` three
                    in
                    con (-) `app` (inc `app` nine) `app` nine)
+      testSharing (let plus = lam $ \x -> lam $ \y -> let z = con (*) `app` x `app` y 
+                                                      in  con (+) `app` z `app` z 
+                   in let inc = plus `app` con 1 
+                   in 
+                   plus `app` (inc `app` (inc `app` con 1)) `app` con 42)
   where
     printLine  desc e = putStrLn $ desc ++ " " ++ show e ++ "    — " ++ DeBruijn.pprTerm e
     printLine' desc e = putStrLn $ desc ++ " " ++ show e
